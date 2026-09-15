@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EPAI: Turn Employee Data Into Actionable Intelligence">
+    <title>EPAI | Workforce Intelligence Platform</title>
+    
+    <!-- Premium Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light-mode">
+    <!-- Premium Loading Screen -->
+    <div id="loading-screen" class="loading-screen" role="alert" aria-live="assertive">
+        <div class="loader-content">
+            <div class="logo-svg-container loader-logo">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Analytics Bars -->
+                    <rect x="25" y="60" width="10" height="20" fill="currentColor" opacity="0.4"/>
+                    <rect x="45" y="40" width="10" height="40" fill="currentColor" opacity="0.7"/>
+                    <rect x="65" y="20" width="10" height="60" fill="currentColor"/>
+                    <!-- Human Silhouette -->
+                    <circle cx="50" cy="30" r="12" fill="var(--primary)" opacity="0.9"/>
+                    <path d="M20,90 Q50,70 80,90" fill="none" stroke="var(--primary)" stroke-width="8" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2 class="loader-title">EPAI</h2>
+            <p class="loader-subtitle">Preparing Workforce Intelligence</p>
+            <p class="loader-status" id="loader-status-text">Analyzing employee data...</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-svg-container">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="55" width="12" height="25" fill="var(--primary)" opacity="0.6"/>
+                            <rect x="44" y="35" width="12" height="45" fill="var(--primary)" opacity="0.8"/>
+                            <rect x="68" y="15" width="12" height="65" fill="var(--primary)"/>
+                            <circle cx="50" cy="25" r="10" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <span class="logo-text">EPAI</span>
+                </div>
+                <button id="toggle-sidebar" class="icon-btn" aria-label="Toggle Sidebar"><i class="fas fa-bars"></i></button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">Workspace</div>
+                <ul class="nav-list" role="menu">
+                    <li class="nav-item active" data-target="dashboard" role="menuitem" tabindex="0">
+                        <i class="fas fa-border-all"></i><span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" data-target="directory" role="menuitem" tabindex="0">
+                        <i class="fas fa-users"></i><span>Employee Directory</span>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">Analytics</div>
+                <ul class="nav-list" role="menu">
+                    <li class="nav-item" data-target="performance" role="menuitem" tabindex="0">
+                        <i class="fas fa-chart-line"></i><span>Performance</span>
+                    </li>
+                    <li class="nav-item" data-target="attrition" role="menuitem" tabindex="0">
+                        <i class="fas fa-user-minus"></i><span>Attrition</span>
+                    </li>
+                    <li class="nav-item" data-target="department" role="menuitem" tabindex="0">
+                        <i class="fas fa-sitemap"></i><span>Departments</span>
+                    </li>
+                    <li class="nav-item" data-target="insights" role="menuitem" tabindex="0">
+                        <i class="fas fa-lightbulb"></i><span>Insights</span>
+                    </li>
+                    <li class="nav-item" data-target="reports" role="menuitem" tabindex="0">
+                        <i class="fas fa-file-pdf"></i><span>Reports</span>
+                    </li>
+                </ul>
+
+                <div class="nav-section-title">System</div>
+                <ul class="nav-list" role="menu">
+                    <li class="nav-item" data-target="about" role="menuitem" tabindex="0">
+                        <i class="fas fa-info-circle"></i><span>About</span>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1 id="page-title">Workforce Intelligence</h1>
+                    <p id="page-subtitle">Understand your people. Improve performance. Reduce avoidable attrition.</p>
+                </div>
+                <div class="header-right">
+                    <div class="header-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="global-search" placeholder="Search employees..." aria-label="Global Search">
+                    </div>
+                    <div id="backend-status" class="backend-status">
+                        <i class="fas fa-circle"></i> <span>Connecting...</span>
+                    </div>
+                    <button id="theme-toggle" class="icon-btn" aria-label="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="avatar">HR</div>
+                        <div class="user-info">
+                            <span class="user-name">Admin</span>
+                        </div>
+                    </div>
+                    <button id="logout-btn" class="icon-btn text-muted" aria-label="Logout" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Global Filters Bar -->
+            <section class="global-filters" id="global-filters">
+                <div class="filters-header">
+                    <h3><i class="fas fa-filter"></i> Filters</h3>
+                    <div class="filters-actions">
+                        <span id="active-record-count">0 employees analyzed</span>
+                        <button id="reset-filters" class="btn btn-outline">Reset</button>
+                        <button id="apply-filters" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Department</label>
+                        <select id="filter-department"><option value="All">All</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Job Role</label>
+                        <select id="filter-jobrole"><option value="All">All</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Gender</label>
+                        <select id="filter-gender"><option value="All">All</option><option value="Male">Male</option><option value="Female">Female</option><option value="Non-Binary">Non-Binary</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Attrition</label>
+                        <select id="filter-attrition"><option value="All">All</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Overtime</label>
+                        <select id="filter-overtime"><option value="All">All</option><option value="Yes">Yes</option><option value="No">No</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Age Group</label>
+                        <select id="filter-age"><option value="All">All</option><option value="18-25">18-25</option><option value="26-35">26-35</option><option value="36-45">36-45</option><option value="46-55">46-55</option><option value="55+">55+</option></select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 1. DASHBOARD VIEW -->
+            <section id="view-dashboard" class="view-section active">
+                
+                <!-- Dashboard Hero Meta -->
+                <div style="display: flex; gap: 16px; margin-bottom: 24px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">
+                    <div><i class="fas fa-clock"></i> Last updated: <span id="dash-time">Today, Just now</span></div>
+                    <div><i class="fas fa-database"></i> Source: Employee Intelligence Database</div>
+                    <div class="text-success"><i class="fas fa-check-circle"></i> System Operational</div>
+                </div>
+
+                <!-- 1. Executive Overview -->
+                <div class="dashboard-row">
+                    <div class="card executive-summary full-width">
+                        <div class="card-header">
+                            <h2>Executive Overview</h2>
+                        </div>
+                        <div class="card-body">
+                            <p id="executive-summary-text" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); font-weight: 500;">Analyzing workforce data...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Workforce KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Total Employees</span>
+                            <div class="kpi-icon blue"><i class="fas fa-users"></i></div>
+                        </div>
+                        <div class="kpi-body">
+                            <h3 class="kpi-value" id="kpi-total-emp">0</h3>
+                            <span class="kpi-context">Current active dataset</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Attrition Rate</span>
+                            <div class="kpi-icon red"><i class="fas fa-user-minus"></i></div>
+                        </div>
+                        <div class="kpi-body">
+                            <h3 class="kpi-value" id="kpi-attrition-rate">0%</h3>
+                            <span class="kpi-context">Overall turnover rate</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">Avg Performance</span>
+                            <div class="kpi-icon green"><i class="fas fa-star"></i></div>
+                        </div>
+                        <div class="kpi-body">
+                            <h3 class="kpi-value" id="kpi-avg-perf">0 / 5</h3>
+                            <span class="kpi-context">Workforce average rating</span>
+                        </div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-title">High-Risk Employees</span>
+                            <div class="kpi-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                        </div>
+                        <div class="kpi-body">
+                            <h3 class="kpi-value text-danger" id="kpi-high-risk">0</h3>
+                            <span class="kpi-trend negative"><i class="fas fa-arrow-up"></i> Requires immediate review</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 & 4. Attrition and Performance Overview -->
+                <div class="dashboard-row">
+                    <div class="card flex-1">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h2>Attrition by Department</h2>
+                                <span class="card-subtitle">Where is turnover concentrated?</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container"><canvas id="chart-attrition-dept"></canvas></div>
+                            <div class="chart-takeaway"><strong>Key Takeaway:</strong> Evaluates which business units require retention interventions.</div>
+                        </div>
+                    </div>
+                    <div class="card flex-1">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h2>Performance Distribution</h2>
+                                <span class="card-subtitle">How is our workforce performing overall?</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container"><canvas id="chart-perf-dist"></canvas></div>
+                            <div class="chart-takeaway"><strong>Key Takeaway:</strong> Analyzes the spread of performance ratings across the organization.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7 & 9. Insights and Recommendations -->
+                <div class="dashboard-row">
+                    <div class="card flex-2">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h2>AI-Style Workforce Insights</h2>
+                                <span class="card-subtitle">Statistical patterns discovered in the dataset</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="insights-grid" id="automated-insights-list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. Employees Requiring Attention -->
+                <div class="dashboard-row">
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <h2>Employees Requiring Attention <span class="badge danger">High Risk</span></h2>
+                                <span class="card-subtitle">Identified via heuristic Analytical Attrition Risk Score</span>
+                            </div>
+                            <button class="btn btn-outline" id="view-all-risk" onclick="document.querySelector('.nav-item[data-target=\'directory\']').click()">View Directory</button>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="data-table" id="high-risk-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Department</th>
+                                            <th>Risk Score</th>
+                                            <th>Primary Risk Factor</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. EMPLOYEE DIRECTORY -->
+            <section id="view-directory" class="view-section">
+                <div class="card full-width">
+                    <div class="card-header flex-between" style="align-items: center;">
+                        <div class="card-title-group">
+                            <h2>Employee Directory</h2>
+                            <span class="card-subtitle">Manage workforce records</span>
+                        </div>
+                        <div class="header-search" style="display: block; width: 300px;">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="emp-search" placeholder="Search by ID or Role...">
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="data-table" id="directory-table">
+                                <thead>
+                                    <tr>
+                                        <th data-sort="EmployeeID">Employee ID <i class="fas fa-sort"></i></th>
+                                        <th data-sort="Department">Department <i class="fas fa-sort"></i></th>
+                                        <th data-sort="JobRole">Job Role <i class="fas fa-sort"></i></th>
+                                        <th data-sort="PerformanceRating">Performance <i class="fas fa-sort"></i></th>
+                                        <th data-sort="Attrition">Attrition <i class="fas fa-sort"></i></th>
+                                        <th data-sort="RiskScore">Risk Score <i class="fas fa-sort"></i></th>
+                                        <th data-sort="RiskLevel">Risk Level <i class="fas fa-sort"></i></th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pagination" id="directory-pagination"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. PERFORMANCE ANALYTICS -->
+            <section id="view-performance" class="view-section">
+                <!-- Structure preserved, premium cards applied automatically via CSS -->
+                <div class="dashboard-row">
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Average Performance by Department</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-perf-dept"></canvas></div></div>
+                    </div>
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Performance Rating Distribution</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-perf-dist-full"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="dashboard-row">
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Performance vs Monthly Income</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-perf-income"></canvas></div></div>
+                    </div>
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Performance by Job Role</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-perf-role"></canvas></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ATTRITION INTELLIGENCE -->
+            <section id="view-attrition" class="view-section">
+                <div class="dashboard-row">
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Attrition by Overtime</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-attr-overtime"></canvas></div></div>
+                    </div>
+                    <div class="card flex-2">
+                        <div class="card-header"><div class="card-title-group"><h2>Attrition by Department</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-attr-dept-full"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="dashboard-row">
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Attrition by Satisfaction</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-attr-sat"></canvas></div></div>
+                    </div>
+                    <div class="card flex-1">
+                        <div class="card-header"><div class="card-title-group"><h2>Attrition by Tenure</h2></div></div>
+                        <div class="card-body"><div class="chart-container"><canvas id="chart-attr-tenure"></canvas></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. DEPARTMENT ANALYSIS -->
+            <section id="view-department" class="view-section">
+                <div class="dashboard-row">
+                    <div class="card full-width">
+                        <div class="card-header" style="justify-content: space-between; align-items: center; display: flex;">
+                            <div class="card-title-group">
+                                <h2>Department Comparison</h2>
+                            </div>
+                            <select id="dept-compare-metric" style="width: 200px;">
+                                <option value="attrition">Attrition Rate</option>
+                                <option value="performance">Avg Performance</option>
+                                <option value="salary">Avg Salary</option>
+                            </select>
+                        </div>
+                        <div class="card-body"><div class="chart-container" style="height: 400px;"><canvas id="chart-dept-compare"></canvas></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5.5 INSIGHTS -->
+            <section id="view-insights" class="view-section">
+                <div class="dashboard-row">
+                    <div class="card full-width">
+                        <div class="card-header"><div class="card-title-group"><h2>Recommended HR Actions</h2></div></div>
+                        <div class="card-body">
+                            <div class="insights-grid" id="hr-recommendations-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. REPORTS -->
+            <section id="view-reports" class="view-section">
+                <div class="card full-width">
+                    <div class="card-header" style="justify-content: space-between; align-items: center; display: flex;">
+                        <div class="card-title-group"><h2>Executive Report Generator</h2></div>
+                        <div class="card-actions">
+                            <button class="btn btn-outline" id="generate-report-btn"><i class="fas fa-sync-alt"></i> Generate</button>
+                            <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Print PDF</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="report-content" style="background: white; color: black; padding: 40px;">
+                        <!-- Report content -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. ABOUT -->
+            <section id="view-about" class="view-section">
+                <div class="card full-width">
+                    <div class="card-header"><div class="card-title-group"><h2>About EPAI</h2></div></div>
+                    <div class="card-body" style="max-width: 800px; line-height: 1.8;">
+                        <p><strong>EPAI (Employee Performance & Attrition Intelligence)</strong> is a professional workforce analytics platform.</p>
+                        <br>
+                        <h3>Analytical Credibility</h3>
+                        <p>The "Analytical Attrition Risk Score" is a programmatic heuristic algorithm based on HR attributes (e.g., Overtime, Low Satisfaction). It is NOT a scientifically validated Machine Learning model. It serves as an analytical flag to direct HR attention.</p>
+                        <br>
+                        <h3>Data Source</h3>
+                        <p>This is a portfolio project utilizing synthetic employee data running on a local Full-Stack Node.js and MongoDB architecture.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="employee-modal" class="modal-overlay">
+        <div class="modal-content" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <div class="modal-emp-info">
+                    <div class="modal-avatar" id="modal-avatar">EMP</div>
+                    <div class="modal-titles">
+                        <h2 id="modal-emp-id">EMP1001</h2>
+                        <p id="modal-emp-role">Role & Department</p>
+                        <div id="modal-badges" style="margin-top: 8px; display: flex; gap: 8px;"></div>
+                    </div>
+                </div>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
