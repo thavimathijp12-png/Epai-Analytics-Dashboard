@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2563eb" />
+            <stop offset="100%" stop-color="#1e3a8a" />
+        </linearGradient>
+    </defs>
+    
+    <!-- Background rounded square for professional app look -->
+    <rect x="0" y="0" width="120" height="120" rx="28" fill="url(#bg)" />
+    
+    <!-- Human & Chart Bars Overlay -->
+    <g fill="#ffffff">
+        <!-- Person 1 (Low) -->
+        <circle cx="30" cy="76" r="10" opacity="0.5"/>
+        <path d="M 20 105 L 20 94 A 10 10 0 0 1 40 94 L 40 105 Z" opacity="0.5"/>
+        
+        <!-- Person 2 (Medium) -->
+        <circle cx="60" cy="56" r="10" opacity="0.8"/>
+        <path d="M 50 105 L 50 74 A 10 10 0 0 1 70 74 L 70 105 Z" opacity="0.8"/>
+        
+        <!-- Person 3 (High) -->
+        <circle cx="90" cy="36" r="10" />
+        <path d="M 80 105 L 80 54 A 10 10 0 0 1 100 54 L 100 105 Z" />
+    </g>
+</svg>
