@@ -103,7 +103,7 @@ The backend exposes a secure RESTful API under `/api`. All endpoints (except log
 
 ---
 
-## ⚙️ Quick Start
+## 🚀 Quick Start (Local Development)
 
 Follow these instructions to run the full-stack application on your local machine.
 
@@ -111,7 +111,7 @@ Follow these instructions to run the full-stack application on your local machin
 - **Node.js** (v14 or higher)
 - **MongoDB** (Running locally on `mongodb://127.0.0.1:27017` or via MongoDB Atlas)
 
-### 2. Backend Setup
+### 2. Setup
 Open a terminal in the `backend/` directory:
 
 ```bash
@@ -126,26 +126,56 @@ copy .env.example .env
 # 3. Seed the database (Creates demo admin and 1200 employees)
 npm run seed
 
-# 4. Run automated backend test
-npm run test
-
-# 5. Start the Express server
+# 4. Start the Express server
 npm start
 ```
-*The backend will run on `http://localhost:5000`.*
+*The backend will run on `http://localhost:5000` and automatically serve the frontend.*
 
-### 3. Frontend Setup
-Open a separate terminal in the `frontend/` directory (or the root directory):
-
-```bash
-# Use http-server to host the frontend
-npx -y http-server ./frontend -p 8081 -c-1
-```
-*Navigate to `http://localhost:8081/login.html` in your browser.*
+Navigate to `http://localhost:5000/login.html` in your browser.
 
 ### 🔑 Demo Credentials
 - **Email:** admin@epai.com
 - **Password:** password123
+
+---
+
+## ☁️ Deployment Guide
+
+The EPAI dashboard is completely deployment-ready for standard Node.js hosting providers (like Render, Heroku, or DigitalOcean). 
+
+The backend has been configured to **serve the frontend static files automatically**, meaning you can deploy the entire application as a single unified service.
+
+### 1. Environment Variables Required in Production
+
+When deploying to a cloud host, ensure you set the following environment variables in your hosting provider's dashboard:
+
+| Variable | Description |
+|---|---|
+| `MONGODB_URI` | Your production MongoDB connection string (e.g. from MongoDB Atlas). |
+| `JWT_SECRET` | A secure, random string used to sign authentication tokens. |
+| `PORT` | Most hosts (like Render) inject this automatically. Defaults to 5000. |
+| `FRONTEND_URL` | *(Optional)* If deploying frontend and backend separately, set this to your frontend URL to configure CORS securely. |
+
+### 2. Deploying as a Unified Service (Recommended)
+
+This is the easiest method. Both frontend and backend are hosted together.
+
+1. Create a new "Web Service" on Render or Heroku.
+2. Connect your GitHub repository.
+3. **Build Command:** `cd backend && npm install`
+4. **Start Command:** `cd backend && npm start`
+5. Add your `MONGODB_URI` and `JWT_SECRET` as environment variables.
+6. Deploy! Your app will be live at `https://your-app-name.onrender.com`.
+
+### 3. Deploying as Split Services (Advanced)
+
+If you prefer to host the frontend on a static host (like Netlify or Vercel) and the backend on Render:
+
+1. **Deploy Backend:** Follow the steps above, but add the `FRONTEND_URL` environment variable (e.g. `https://your-frontend.netlify.app`).
+2. **Deploy Frontend:**
+   - In your frontend code, edit `frontend/config.js`.
+   - Set `window.ENV_API_URL = "https://your-backend.onrender.com/api";`.
+   - Deploy the `frontend/` folder to Netlify/Vercel.
 
 ---
 
