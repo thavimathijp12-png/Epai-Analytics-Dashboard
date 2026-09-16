@@ -319,9 +319,14 @@
                             <h2>Employee Directory</h2>
                             <span class="card-subtitle">Manage workforce records</span>
                         </div>
-                        <div class="header-search" style="display: block; width: 300px;">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="emp-search" placeholder="Search by ID or Role...">
+                        <div style="display:flex; align-items:center; gap: 12px;">
+                            <div class="header-search" style="display: block; width: 280px;">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="emp-search" placeholder="Search by ID or Role...">
+                            </div>
+                            <button id="add-employee-btn" class="btn btn-primary" style="white-space:nowrap;">
+                                <i class="fas fa-plus"></i> Add Employee
+                            </button>
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -482,6 +487,239 @@
             </div>
             <div class="modal-body" id="modal-body">
                 <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div id="add-employee-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="add-emp-modal-title">
+        <div class="modal-content add-emp-modal-content">
+            <div class="modal-header">
+                <div class="modal-emp-info">
+                    <div class="modal-avatar" style="background: linear-gradient(135deg, var(--primary), var(--primary-hover));"><i class="fas fa-user-plus" style="font-size:1rem;"></i></div>
+                    <div class="modal-titles">
+                        <h2 id="add-emp-modal-title">Add New Employee</h2>
+                        <p>Fill in all required fields to register a new employee record.</p>
+                    </div>
+                </div>
+                <button class="close-btn" id="close-add-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-employee-form" novalidate>
+
+                    <!-- Section: Identity -->
+                    <div class="form-section-title"><i class="fas fa-id-card"></i> Identity & Contact</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-emp-id">Employee ID <span class="required">*</span></label>
+                            <input type="text" id="aef-emp-id" name="EmployeeID" placeholder="e.g. EMP1470" required>
+                            <span class="field-error" id="err-EmployeeID"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-age">Age <span class="required">*</span></label>
+                            <input type="number" id="aef-age" name="Age" placeholder="e.g. 32" min="18" max="70" required>
+                            <span class="field-error" id="err-Age"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-gender">Gender <span class="required">*</span></label>
+                            <select id="aef-gender" name="Gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Non-Binary">Non-Binary</option>
+                            </select>
+                            <span class="field-error" id="err-Gender"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-marital">Marital Status</label>
+                            <select id="aef-marital" name="MaritalStatus">
+                                <option value="">Select Status</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-education">Education Level (1–5)</label>
+                            <input type="number" id="aef-education" name="Education" placeholder="e.g. 3" min="1" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-edu-field">Education Field</label>
+                            <input type="text" id="aef-edu-field" name="EducationField" placeholder="e.g. Life Sciences">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-distance">Distance From Home (km) <span class="required">*</span></label>
+                            <input type="number" id="aef-distance" name="DistanceFromHome" placeholder="e.g. 12" min="0" required>
+                            <span class="field-error" id="err-DistanceFromHome"></span>
+                        </div>
+                    </div>
+
+                    <!-- Section: Job Details -->
+                    <div class="form-section-title"><i class="fas fa-briefcase"></i> Job Details</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-dept">Department <span class="required">*</span></label>
+                            <select id="aef-dept" name="Department" required>
+                                <option value="">Select Department</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Research & Development">Research & Development</option>
+                                <option value="Sales">Sales</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                                <option value="IT">IT</option>
+                                <option value="Operations">Operations</option>
+                            </select>
+                            <span class="field-error" id="err-Department"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-jobrole">Job Role <span class="required">*</span></label>
+                            <input type="text" id="aef-jobrole" name="JobRole" placeholder="e.g. Sales Executive" required>
+                            <span class="field-error" id="err-JobRole"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-joblevel">Job Level (1–5) <span class="required">*</span></label>
+                            <input type="number" id="aef-joblevel" name="JobLevel" placeholder="e.g. 2" min="1" max="5" required>
+                            <span class="field-error" id="err-JobLevel"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-travel">Business Travel</label>
+                            <select id="aef-travel" name="BusinessTravel">
+                                <option value="">Select Travel Frequency</option>
+                                <option value="Non-Travel">Non-Travel</option>
+                                <option value="Travel_Rarely">Travel Rarely</option>
+                                <option value="Travel_Frequently">Travel Frequently</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section: Compensation -->
+                    <div class="form-section-title"><i class="fas fa-dollar-sign"></i> Compensation</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-income">Monthly Income ($) <span class="required">*</span></label>
+                            <input type="number" id="aef-income" name="MonthlyIncome" placeholder="e.g. 5800" min="0" required>
+                            <span class="field-error" id="err-MonthlyIncome"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-hourly">Hourly Rate ($)</label>
+                            <input type="number" id="aef-hourly" name="HourlyRate" placeholder="e.g. 65" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-daily">Daily Rate ($)</label>
+                            <input type="number" id="aef-daily" name="DailyRate" placeholder="e.g. 450" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-monthly-rate">Monthly Rate ($)</label>
+                            <input type="number" id="aef-monthly-rate" name="MonthlyRate" placeholder="e.g. 13000" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-stock">Stock Option Level (0–3)</label>
+                            <input type="number" id="aef-stock" name="StockOptionLevel" placeholder="e.g. 1" min="0" max="3">
+                        </div>
+                    </div>
+
+                    <!-- Section: Tenure -->
+                    <div class="form-section-title"><i class="fas fa-history"></i> Experience & Tenure</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-years-company">Years at Company <span class="required">*</span></label>
+                            <input type="number" id="aef-years-company" name="YearsAtCompany" placeholder="e.g. 3" min="0" required>
+                            <span class="field-error" id="err-YearsAtCompany"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-years-role">Years in Current Role <span class="required">*</span></label>
+                            <input type="number" id="aef-years-role" name="YearsInCurrentRole" placeholder="e.g. 2" min="0" required>
+                            <span class="field-error" id="err-YearsInCurrentRole"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-years-promo">Years Since Last Promotion <span class="required">*</span></label>
+                            <input type="number" id="aef-years-promo" name="YearsSinceLastPromotion" placeholder="e.g. 1" min="0" required>
+                            <span class="field-error" id="err-YearsSinceLastPromotion"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-years-manager">Years with Current Manager</label>
+                            <input type="number" id="aef-years-manager" name="YearsWithCurrManager" placeholder="e.g. 2" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-total-years">Total Working Years <span class="required">*</span></label>
+                            <input type="number" id="aef-total-years" name="TotalWorkingYears" placeholder="e.g. 8" min="0" required>
+                            <span class="field-error" id="err-TotalWorkingYears"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-num-companies">Number of Companies Worked</label>
+                            <input type="number" id="aef-num-companies" name="NumCompaniesWorked" placeholder="e.g. 2" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-training">Training Times Last Year</label>
+                            <input type="number" id="aef-training" name="TrainingTimesLastYear" placeholder="e.g. 3" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Section: Performance & Wellbeing -->
+                    <div class="form-section-title"><i class="fas fa-chart-line"></i> Performance & Wellbeing</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-perf">Performance Rating (1–4) <span class="required">*</span></label>
+                            <input type="number" id="aef-perf" name="PerformanceRating" placeholder="e.g. 3" min="1" max="4" required>
+                            <span class="field-error" id="err-PerformanceRating"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-jobsat">Job Satisfaction (1–4) <span class="required">*</span></label>
+                            <input type="number" id="aef-jobsat" name="JobSatisfaction" placeholder="e.g. 3" min="1" max="4" required>
+                            <span class="field-error" id="err-JobSatisfaction"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-envsat">Environment Satisfaction (1–4)</label>
+                            <input type="number" id="aef-envsat" name="EnvironmentSatisfaction" placeholder="e.g. 3" min="1" max="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-relsat">Relationship Satisfaction (1–4)</label>
+                            <input type="number" id="aef-relsat" name="RelationshipSatisfaction" placeholder="e.g. 3" min="1" max="4">
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-wlb">Work-Life Balance (1–4) <span class="required">*</span></label>
+                            <input type="number" id="aef-wlb" name="WorkLifeBalance" placeholder="e.g. 3" min="1" max="4" required>
+                            <span class="field-error" id="err-WorkLifeBalance"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-jobinvolve">Job Involvement (1–4)</label>
+                            <input type="number" id="aef-jobinvolve" name="JobInvolvement" placeholder="e.g. 3" min="1" max="4">
+                        </div>
+                    </div>
+
+                    <!-- Section: Attrition / Risk -->
+                    <div class="form-section-title"><i class="fas fa-user-minus"></i> Attrition & Overtime</div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="aef-attrition">Attrition <span class="required">*</span></label>
+                            <select id="aef-attrition" name="Attrition" required>
+                                <option value="">Select Status</option>
+                                <option value="No" selected>No (Active)</option>
+                                <option value="Yes">Yes (Exited)</option>
+                            </select>
+                            <span class="field-error" id="err-Attrition"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="aef-overtime">Overtime <span class="required">*</span></label>
+                            <select id="aef-overtime" name="Overtime" required>
+                                <option value="">Select Option</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                            <span class="field-error" id="err-Overtime"></span>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" id="cancel-add-employee" class="btn btn-outline">Cancel</button>
+                        <button type="submit" id="save-employee-btn" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            <span id="save-btn-text">Save Employee</span>
+                        </button>
+                    </div>
+
+                </form>
             </div>
         </div>
     </div>

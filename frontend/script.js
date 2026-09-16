@@ -282,6 +282,29 @@ function setupEventListeners() {
     DOM.closeModalBtn.addEventListener('click', () => DOM.modal.classList.remove('show'));
     window.addEventListener('click', (e) => { if (e.target === DOM.modal) DOM.modal.classList.remove('show'); });
 
+    // Add Employee modal wiring
+    const addModal = document.getElementById('add-employee-modal');
+    const addEmpBtn = document.getElementById('add-employee-btn');
+    const closeAddModalBtn = document.getElementById('close-add-modal');
+    const cancelAddBtn = document.getElementById('cancel-add-employee');
+    const addEmpForm = document.getElementById('add-employee-form');
+
+    if (addEmpBtn) {
+        addEmpBtn.addEventListener('click', () => {
+            addEmpForm.reset();
+            clearAddFormErrors();
+            addModal.classList.add('show');
+        });
+    }
+    const closeAddModal = () => addModal.classList.remove('show');
+    if (closeAddModalBtn) closeAddModalBtn.addEventListener('click', closeAddModal);
+    if (cancelAddBtn) cancelAddBtn.addEventListener('click', closeAddModal);
+    window.addEventListener('click', (e) => { if (e.target === addModal) closeAddModal(); });
+
+    if (addEmpForm) {
+        addEmpForm.addEventListener('submit', handleAddEmployeeSubmit);
+    }
+
     document.querySelectorAll('th[data-sort]').forEach(th => {
         th.addEventListener('click', () => handleSort(th));
     });
@@ -545,6 +568,126 @@ window.openEmployeeModal = async function(empId) {
         DOM.modal.classList.add('show');
     } catch(e) {
         showToast('Could not load employee details.', 'error');
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * ADD EMPLOYEE FEATURE
+ * -------------------------------------------------------------------------- */
+
+function clearAddFormErrors() {
+    document.querySelectorAll('#add-employee-form .field-error').forEach(el => el.textContent = '');
+    document.querySelectorAll('#add-employee-form input, #add-employee-form select').forEach(el => el.classList.remove('input-error'));
+}
+
+function setFieldError(fieldName, message) {
+    const errEl = document.getElementById(`err-${fieldName}`);
+    const inputEl = document.querySelector(`#add-employee-form [name="${fieldName}"]`);
+    if (errEl) errEl.textContent = message;
+    if (inputEl) inputEl.classList.add('input-error');
+}
+
+function validateAddEmployeeForm(data) {
+    const requiredFields = [
+        { key: 'EmployeeID', label: 'Employee ID' },
+        { key: 'Age', label: 'Age', numeric: true, min: 18, max: 70 },
+        { key: 'Gender', label: 'Gender' },
+        { key: 'Department', label: 'Department' },
+        { key: 'JobRole', label: 'Job Role' },
+        { key: 'JobLevel', label: 'Job Level', numeric: true, min: 1, max: 5 },
+        { key: 'MonthlyIncome', label: 'Monthly Income', numeric: true, min: 0 },
+        { key: 'YearsAtCompany', label: 'Years at Company', numeric: true, min: 0 },
+        { key: 'YearsInCurrentRole', label: 'Years in Current Role', numeric: true, min: 0 },
+        { key: 'YearsSinceLastPromotion', label: 'Years Since Last Promotion', numeric: true, min: 0 },
+        { key: 'TotalWorkingYears', label: 'Total Working Years', numeric: true, min: 0 },
+        { key: 'PerformanceRating', label: 'Performance Rating', numeric: true, min: 1, max: 4 },
+        { key: 'JobSatisfaction', label: 'Job Satisfaction', numeric: true, min: 1, max: 4 },
+        { key: 'WorkLifeBalance', label: 'Work-Life Balance', numeric: true, min: 1, max: 4 },
+        { key: 'DistanceFromHome', label: 'Distance From Home', numeric: true, min: 0 },
+        { key: 'Overtime', label: 'Overtime' },
+        { key: 'Attrition', label: 'Attrition' }
+    ];
+
+    let valid = true;
+    requiredFields.forEach(f => {
+        const val = data[f.key];
+        if (val === null || val === undefined || val === '') {
+            setFieldError(f.key, `${f.label} is required.`);
+            valid = false;
+        } else if (f.numeric) {
+            const num = Number(val);
+            if (isNaN(num)) {
+                setFieldError(f.key, `${f.label} must be a number.`);
+                valid = false;
+            } else if (f.min !== undefined && num < f.min) {
+                setFieldError(f.key, `${f.label} must be at least ${f.min}.`);
+                valid = false;
+            } else if (f.max !== undefined && num > f.max) {
+                setFieldError(f.key, `${f.label} must be at most ${f.max}.`);
+                valid = false;
+            }
+        }
+    });
+    return valid;
+}
+
+async function handleAddEmployeeSubmit(e) {
+    e.preventDefault();
+    clearAddFormErrors();
+
+    const form = document.getElementById('add-employee-form');
+    const formData = new FormData(form);
+    const raw = {};
+    formData.forEach((val, key) => { raw[key] = val; });
+
+    // Convert numeric fields
+    const numericFields = ['Age', 'JobLevel', 'MonthlyIncome', 'HourlyRate', 'DailyRate', 'MonthlyRate',
+        'YearsAtCompany', 'YearsInCurrentRole', 'YearsSinceLastPromotion', 'YearsWithCurrManager',
+        'TotalWorkingYears', 'NumCompaniesWorked', 'PerformanceRating', 'JobSatisfaction',
+        'EnvironmentSatisfaction', 'RelationshipSatisfaction', 'WorkLifeBalance', 'JobInvolvement',
+        'TrainingTimesLastYear', 'StockOptionLevel', 'DistanceFromHome', 'Education'];
+    numericFields.forEach(field => {
+        if (raw[field] !== '' && raw[field] !== undefined) {
+            raw[field] = Number(raw[field]);
+        }
+    });
+
+    // Remove empty optional fields
+    Object.keys(raw).forEach(key => {
+        if (raw[key] === '' || raw[key] === null) delete raw[key];
+    });
+
+    if (!validateAddEmployeeForm(raw)) {
+        showToast('Please fix the validation errors before saving.', 'error');
+        return;
+    }
+
+    // Set loading state
+    const saveBtn = document.getElementById('save-employee-btn');
+    const saveBtnText = document.getElementById('save-btn-text');
+    saveBtn.disabled = true;
+    saveBtnText.textContent = 'Saving...';
+    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Saving...</span>';
+
+    try {
+        await apiCall('/employees', {
+            method: 'POST',
+            body: JSON.stringify(raw)
+        });
+
+        // Success
+        document.getElementById('add-employee-modal').classList.remove('show');
+        showToast(`Employee ${raw.EmployeeID} added successfully!`, 'success');
+
+        // Refresh the directory to show the newly added employee
+        state.currentPage = 1;
+        await fetchEmployeeTable();
+
+    } catch (err) {
+        showToast(err.message || 'Failed to save employee. Please try again.', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-save"></i> <span id="save-btn-text">Save Employee</span>';
     }
 }
 
